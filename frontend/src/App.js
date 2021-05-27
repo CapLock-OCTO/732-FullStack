@@ -17,11 +17,11 @@ function App() {
 
   const classes = useStyles();
 
-  const { isAuthenticated, loginWithRedirect, logout } = useAuth0();
+  const { isAuthenticated, loginWithRedirect, logout, user } = useAuth0();
 
   // if (isLoading) { return <Loading /> }
 
-  // if (!isAuthenticated) { loginWithRedirect() };
+  // if (isAuthenticated) { console.log(user); };
 
   const AuthButton = () => {
     return isAuthenticated ?
