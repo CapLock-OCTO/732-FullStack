@@ -1,7 +1,9 @@
 import { Container, Typography, AppBar, Toolbar, makeStyles, Button } from '@material-ui/core';
+import { Switch } from "react-router-dom";
 import TodoList from './components/TodoList';
 import { useAuth0 } from "@auth0/auth0-react";
 import Loading from './components/loading';
+import ProtectedRoute from "./components/ProtectedRoute";
 
 const useStyles = makeStyles(theme => ({
   main: {
@@ -18,9 +20,9 @@ function App() {
 
   const { isLoading, isAuthenticated, loginWithRedirect, logout } = useAuth0();
 
-  if (isLoading) { return <Loading /> }
+  // if (isLoading) { return <Loading /> }
 
-  if (!isAuthenticated) { loginWithRedirect() };
+  // if (!isAuthenticated) { loginWithRedirect() };
 
   const AuthButton = () => {
     return isAuthenticated ?
@@ -28,21 +30,30 @@ function App() {
       <Button variant="contained" color="default" onClick={() => loginWithRedirect()}>Log In</Button>
   }
 
+  const HomePage = () => {
+    return (
+      <>
+        <AppBar position="fixed">
+          <Toolbar>
+            <Typography variant="h6" style={{ flex: 1 }}>My Todos</Typography>
+            <AuthButton />
+          </Toolbar>
+        </AppBar>
+        <Container fixed>
+          <Toolbar />
+          <main className={classes.main}>
+            <TodoList />
+          </main>
+        </Container>
+      </>
+    )
+
+  }
+
   return (
-    <>
-      <AppBar position="fixed">
-        <Toolbar>
-          <Typography variant="h6" style={{ flex: 1 }}>My Todos</Typography>
-          <AuthButton />
-        </Toolbar>
-      </AppBar>
-      <Container fixed>
-        <Toolbar />
-        <main className={classes.main}>
-          <TodoList />
-        </main>
-      </Container>
-    </>
+    <Switch>
+      <ProtectedRoute path="/" exact component={HomePage} />
+    </Switch>
   );
 }
 
