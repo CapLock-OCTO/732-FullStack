@@ -23,17 +23,17 @@ function App() {
   if (!isAuthenticated) { loginWithRedirect() };
 
   const AuthButton = () => {
-    return isAuthenticated ? 
-              <Button variant="contained" color="secondary" onClick={()=>logout()}>Logout</Button> : 
-              <Button variant="contained" color="default" onClick={()=>loginWithRedirect()}>Login In</Button>
+    return isAuthenticated ?
+      <Button variant="contained" color="secondary" onClick={() => logout()}>Log Out</Button> :
+      <Button variant="contained" color="default" onClick={() => loginWithRedirect()}>Log In</Button>
   }
 
   return (
     <>
       <AppBar position="fixed">
         <Toolbar>
-          <Typography variant="h6" style={{flex:1}}>My Todos</Typography>
-          <AuthButton/>
+          <Typography variant="h6" style={{ flex: 1 }}>My Todos</Typography>
+          <AuthButton />
         </Toolbar>
       </AppBar>
       <Container fixed>
