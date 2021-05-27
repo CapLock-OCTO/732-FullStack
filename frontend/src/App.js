@@ -2,7 +2,6 @@ import { Container, Typography, AppBar, Toolbar, makeStyles, Button } from '@mat
 import { Switch } from "react-router-dom";
 import TodoList from './components/TodoList';
 import { useAuth0 } from "@auth0/auth0-react";
-import Loading from './components/loading';
 import ProtectedRoute from "./components/ProtectedRoute";
 
 const useStyles = makeStyles(theme => ({
@@ -18,7 +17,7 @@ function App() {
 
   const classes = useStyles();
 
-  const { isLoading, isAuthenticated, loginWithRedirect, logout } = useAuth0();
+  const { isAuthenticated, loginWithRedirect, logout } = useAuth0();
 
   // if (isLoading) { return <Loading /> }
 
