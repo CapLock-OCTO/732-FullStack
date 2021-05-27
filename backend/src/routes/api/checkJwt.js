@@ -1,8 +1,6 @@
-import { jwt } from "express-jwt";
-import { jwtAuthz } from "express-jwt-authz";
-import { jwksRsa } from "jwks-rsa";
-
-const audience = process.env.AUTH0_AUDIENCE;
+import jwt from "express-jwt";
+import jwtAuthz from "express-jwt-authz";
+import jwksRsa from "jwks-rsa";
 
 // Authorization middleware. When used, the
 // Access Token must exist and be verified against
@@ -19,7 +17,7 @@ const checkJwt = jwt({
     }),
   
     // Validate the audience and the issuer.
-    audience: { audience },
+    audience: process.env.AUTH0_AUDIENCE,
     issuer: [`https://octo-tako.au.auth0.com/`],
     algorithms: ['RS256']
   });

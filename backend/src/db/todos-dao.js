@@ -13,8 +13,8 @@ export async function createTodo(todo) {
     return dbTodo;
 }
 
-export async function retrieveAllTodos() {
-    return await Todo.find();
+export async function retrieveAllTodos(sub) {
+    return await Todo.find({ userSub: sub });
 }
 
 export async function retrieveTodo(id) {
@@ -22,12 +22,22 @@ export async function retrieveTodo(id) {
 }
 
 // A much cleaner way of updating the data compared to the way shown in the video and previous examples...
-export async function updateTodo(todo) {
-
-    const result = await Todo.findByIdAndUpdate(todo._id, todo, { new: true, useFindAndModify: false });
-    return result ? true : false;
+export async function updateTodo(todo, userSub) {
+    const target = await Todo.findById(todo._id);
+    if (target.userSub !== userSub) { 
+        return 401 
+    } else {
+        const result = await Todo.findByIdAndUpdate(todo._id, todo, { new: true, useFindAndModify: false });
+        return result ? 204 : 404;
+    };
 }
 
-export async function deleteTodo(id) {
-    await Todo.deleteOne({ _id: id });
+export async function deleteTodo(id, userSub) {
+    const target = await Todo.findById(id);
+    if (target.userSub !== userSub) { 
+        return 401 
+    } else {
+        const result = await Todo.deleteOne({ _id: id });
+        return result ? 204 : 404;
+    };
 }
