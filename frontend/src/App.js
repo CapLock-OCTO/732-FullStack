@@ -18,21 +18,21 @@ function App() {
 
   const { isLoading, isAuthenticated, loginWithRedirect, logout } = useAuth0();
 
-  if (isLoading) {
-    return <Loading />
-  }
+  if (isLoading) { return <Loading /> }
+
+  if (!isAuthenticated) { loginWithRedirect() };
 
   const AuthButton = () => {
     return isAuthenticated ? 
-              <button onClick={()=>logout()}>Logout</button> : 
-              <button onClick={()=>loginWithRedirect()}>Login In</button>
+              <Button variant="contained" color="secondary" onClick={()=>logout()}>Logout</Button> : 
+              <Button variant="contained" color="default" onClick={()=>loginWithRedirect()}>Login In</Button>
   }
 
   return (
     <>
       <AppBar position="fixed">
         <Toolbar>
-          <Typography variant="h6">My Todos</Typography>
+          <Typography variant="h6" style={{flex:1}}>My Todos</Typography>
           <AuthButton/>
         </Toolbar>
       </AppBar>
