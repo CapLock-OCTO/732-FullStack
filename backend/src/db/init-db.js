@@ -18,8 +18,8 @@ async function main() {
     await clearDatabase();
     console.log();
 
-    await addData();
-    console.log();
+    // await addData();
+    // console.log();
 
     // Disconnect when complete
     await mongoose.disconnect();
@@ -33,12 +33,12 @@ async function clearDatabase() {
     console.log(`Cleared database (removed ${result.deletedCount} todos).`);
 }
 
-async function addData() {
+// async function addData() {
 
-    // More efficient than adding one-by-one.
-    const result = await Todo.insertMany(dummyTodos.map(t => new Todo(t)));
-    console.log(`Added ${result.length} todos to the database.`);
-    for (let todo of result) {
-        console.log(` - ${todo.title} (${todo._id})`);
-    }
-}
+//     // More efficient than adding one-by-one.
+//     const result = await Todo.insertMany(dummyTodos.map(t => new Todo(t)));
+//     console.log(`Added ${result.length} todos to the database.`);
+//     for (let todo of result) {
+//         console.log(` - ${todo.title} (${todo._id})`);
+//     }
+// }

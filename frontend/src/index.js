@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { BrowserRouter as Router } from "react-router-dom";
 import App from './App';
 import { AppContextProvider } from './AppContextProvider';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
@@ -15,15 +16,18 @@ dayjs.extend(localizedFormat);
 
 ReactDOM.render(
   <MuiPickersUtilsProvider utils={DayjsUtils}>
-    <AppContextProvider>
-      <Auth0Provider
-        domain={process.env.REACT_APP_AUTH0_DOMAIN}
-        clientId={process.env.REACT_APP_AUTH0_CLIENT_ID}
-        redirectUri="http://localhost:3000/"
-      >
-        <App />
-      </Auth0Provider>
-    </AppContextProvider>
+    <Auth0Provider
+      domain={process.env.REACT_APP_AUTH0_DOMAIN}
+      clientId={process.env.REACT_APP_AUTH0_CLIENT_ID}
+      redirectUri="http://localhost:3000/"
+      audience={process.env.REACT_APP_AUTH0_AUDIENCE}
+    >
+      <AppContextProvider>
+        <Router>
+          <App />
+        </Router>
+      </AppContextProvider>
+    </Auth0Provider>
   </MuiPickersUtilsProvider>,
   document.getElementById('root')
 );
