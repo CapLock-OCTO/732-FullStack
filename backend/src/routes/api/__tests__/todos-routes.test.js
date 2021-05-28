@@ -56,6 +56,13 @@ const authConfig = {
     headers: { Authorization: `Bearer ${token}` }
 }
 
+const token2 = jwks.token({
+    sub: "1234TEST"
+});
+const config2 = {
+    headers: { Authorization: `Bearer ${token2}` }
+}
+
 // Start database and server before any tests run
 beforeAll(async done => {
     mongod = new MongoMemoryServer();
@@ -299,4 +306,49 @@ it('Return 401 when getting all todos but user not authorised', async () => {
     let error;
     await axios.get('http://localhost:3000/api/todos').catch(err => error = err.response.status)
     expect(error).toBe(401);
+})
+
+it('Return 401 when get single todo but the item do not belongs to that user', async () => {
+    let error;
+    await axios.get('http://localhost:3000/api/todos/000000000000000000000003').catch(err => error = err.response.status, config2)
+    expect(error).toBe(401);
+})
+
+it('Return 401 when create todo but user not authorised', async () => {
+    const newTodo = {
+        title: 'NewTodo1',
+        description: 'NewDesc',
+        isComplete: false,
+        dueDate: dayjs('2100-01-01').format()
+    }
+
+    let error;
+    await axios.post('http://localhost:3000/api/todos', newTodo).catch(err => error = err.response.status)
+    expect(error).toBe(401);
+    // Ensure DB wasn't modified
+    expect(await Todo.countDocuments()).toBe(3);
+})
+
+it('Return 401 when update todo but the updated todo do not belongs to that user', async () => {
+    const toUpdate = {
+        _id: new mongoose.mongo.ObjectId('000000000000000000000003'),
+        title: 'UPDCompleteTitle',
+        description: 'UPDCompleteDesc',
+        isComplete: false,
+        dueDate: dayjs('2100-01-01').format()
+    }
+
+    let error;
+    await axios.put('http://localhost:3000/api/todos/000000000000000000000003', toUpdate, config2).catch(err => error = err.response.status)
+    expect(error).toBe(401);
+    // Ensure DB wasn't modified
+    expect(await Todo.countDocuments()).toBe(3);
+})
+
+it('Return 401 when deleting todo but the todo do not belongs to that user', async () => {
+    let error;
+    await axios.delete('http://localhost:3000/api/todos/000000000000000000000003', config2).catch(err => error = err.response.status)
+    expect(error).toBe(401);
+    // Ensure DB wasn't modified
+    expect(await Todo.countDocuments()).toBe(3);
 })

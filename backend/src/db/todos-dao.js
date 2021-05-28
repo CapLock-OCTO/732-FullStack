@@ -37,7 +37,7 @@ export async function deleteTodo(id, userSub) {
     const target = await Todo.findById(id);
     if (!target) { return 204 }
     if (target.userSub !== userSub) { 
-        return 204 
+        return 401 
     } else {
         const result = await Todo.deleteOne({ _id: id });
         return result ? 204 : 404;
