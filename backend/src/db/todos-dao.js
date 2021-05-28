@@ -24,6 +24,7 @@ export async function retrieveTodo(id) {
 // A much cleaner way of updating the data compared to the way shown in the video and previous examples...
 export async function updateTodo(todo, userSub) {
     const target = await Todo.findById(todo._id);
+    if (!target) { return 404 };
     if (target.userSub !== userSub) { 
         return 401 
     } else {
@@ -34,8 +35,9 @@ export async function updateTodo(todo, userSub) {
 
 export async function deleteTodo(id, userSub) {
     const target = await Todo.findById(id);
+    if (!target) { return 204 }
     if (target.userSub !== userSub) { 
-        return 401 
+        return 204 
     } else {
         const result = await Todo.deleteOne({ _id: id });
         return result ? 204 : 404;

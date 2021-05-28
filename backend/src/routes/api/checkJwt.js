@@ -18,7 +18,8 @@ const checkJwt = jwt({
   
     // Validate the audience and the issuer.
     audience: process.env.AUTH0_AUDIENCE,
-    issuer: [`https://octo-tako.au.auth0.com/`],
+    // issuer: [`https://octo-tako.au.auth0.com/`],
+    issuer: process.env.AUTH0_ISSUER,
     algorithms: ['RS256']
   });
 
