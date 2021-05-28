@@ -3,7 +3,7 @@ const key_e_raw = 65537;
 const key_n_encoded = 'qJYBUFZ262dt-qSIrhZCo0X_W_iATkO-ZH4Uaj08PNo66uE9e6I2saP7EzBdzR5AVmVHiPvb8PexIRjg4SWyxyxYq-Pa2XIFwmYwGMBbGvhd1Q414fhCNOMyApbBWgAeSN1JvgBk05ovhfffdPT9gGR96q3zV5_Vqf1emyhZG_JC1RjGZA3sddKc4Yu2paE0s39R1XnJAypACadoCPW7P30RAsYl92M5kMY2YPt90DhjA08NHxx5jaMbd4h5D0yU9uy9wle8L7NbIl51hv70G8eLDFJUv8U1XrsFt0BKQSDM77x6IYaTJGfpKCgpQ5tLtjiogQ8Y5sVHF1lwk_JPeQ';
 const key_e_encoded = 'AQAB';
 
-const privateKeyMock = 
+const privateKeyMock =
     `-----BEGIN RSA PRIVATE KEY-----
     MIIEogIBAAKCAQEAqJYBUFZ262dt+qSIrhZCo0X/W/iATkO+ZH4Uaj08PNo66uE9
     e6I2saP7EzBdzR5AVmVHiPvb8PexIRjg4SWyxyxYq+Pa2XIFwmYwGMBbGvhd1Q41
@@ -31,3 +31,5 @@ const privateKeyMock =
     uZxLFxiBmhlvxVtZJRkJ4VMDVeU9CJXFFnfcT55FMh/IvJ4ycB+F7yO1l0SWxPh+
     Oky8GP6snKnWXtglDOqbUXCz71SLO0kZY5XlH4PnsaAzPRkUf4k=
     -----END RSA PRIVATE KEY-----`;
+
+export { key_n_encoded, key_e_encoded, privateKeyMock };
