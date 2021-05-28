@@ -17,7 +17,8 @@ const overdueTodo = {
     title: 'OverdueTitle',
     description: 'OverdueDesc',
     isComplete: false,
-    dueDate: dayjs().subtract(1, 'day').format()
+    dueDate: dayjs().subtract(1, 'day').format(),
+    userSub: "AaBbCcDdEeFfGgHh"
 };
 
 const upcomingTodo = {
@@ -25,7 +26,8 @@ const upcomingTodo = {
     title: 'UpcomingTitle',
     description: 'UpcomingDesc',
     isComplete: false,
-    dueDate: dayjs().add(1, 'day').format()
+    dueDate: dayjs().add(1, 'day').format(),
+    userSub: "AaBbCcDdEeFfGgHh"
 };
 
 const completeTodo = {
@@ -33,7 +35,8 @@ const completeTodo = {
     title: 'CompleteTitle',
     description: 'CompleteDesc',
     isComplete: true,
-    dueDate: dayjs().format()
+    dueDate: dayjs().format(),
+    userSub: "AaBbCcDdEeFfGgHh"
 }
 
 const dummyTodos = [overdueTodo, upcomingTodo, completeTodo];
