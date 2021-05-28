@@ -302,26 +302,28 @@ it('Doesn\'t delete anything when it shouldn\'t', async () => {
 
 })
 
-it('Return 401 when getting all todos but user not authorised', async () => {
+//Task3 Q2
+it('T3Q2: Return 401 when getting all todos but user not authorised', async () => {
     let error;
     await axios.get('http://localhost:3000/api/todos').catch(err => error = err.response.status)
     expect(error).toBe(401);
 })
 
-it('Return 401 when get single todo but the item do not belongs to that user', async () => {
+it('T3Q2: Return 401 when get single todo but but user not authorised', async () => {
     let error;
-    await axios.get('http://localhost:3000/api/todos/000000000000000000000003').catch(err => error = err.response.status, config2)
+    await axios.get('http://localhost:3000/api/todos/000000000000000000000003').catch(err => error = err.response.status)
     expect(error).toBe(401);
 })
 
-it('Return 401 when create todo but user not authorised', async () => {
+
+it('T3Q2: Return 401 when create todo but user not authorised', async () => {
     const newTodo = {
         title: 'NewTodo1',
         description: 'NewDesc',
         isComplete: false,
         dueDate: dayjs('2100-01-01').format()
     }
-
+    
     let error;
     await axios.post('http://localhost:3000/api/todos', newTodo).catch(err => error = err.response.status)
     expect(error).toBe(401);
@@ -329,7 +331,39 @@ it('Return 401 when create todo but user not authorised', async () => {
     expect(await Todo.countDocuments()).toBe(3);
 })
 
-it('Return 401 when update todo but the updated todo do not belongs to that user', async () => {
+it('T3Q2: Return 401 when update todo but user not authorised', async () => {
+    const toUpdate = {
+        _id: new mongoose.mongo.ObjectId('000000000000000000000003'),
+        title: 'UPDCompleteTitle',
+        description: 'UPDCompleteDesc',
+        isComplete: false,
+        dueDate: dayjs('2100-01-01').format()
+    }
+
+    let error;
+    await axios.put('http://localhost:3000/api/todos/000000000000000000000003', toUpdate).catch(err => error = err.response.status)
+    expect(error).toBe(401);
+    // Ensure DB wasn't modified
+    expect(await Todo.countDocuments()).toBe(3);
+})
+
+it('T3Q2: Return 401 when deleting todo but user not authorised', async () => {
+    let error;
+    await axios.delete('http://localhost:3000/api/todos/000000000000000000000003').catch(err => error = err.response.status)
+    expect(error).toBe(401);
+    // Ensure DB wasn't modified
+    expect(await Todo.countDocuments()).toBe(3);
+})
+
+
+//Task3 Q3
+it('T3Q3: Return 401 when get single todo but user not authorised', async () => {
+    let error;
+    await axios.get('http://localhost:3000/api/todos/000000000000000000000003').catch(err => error = err.response.status, config2)
+    expect(error).toBe(401);
+})
+
+it('T3Q3: Return 401 when update todo but the updated todo do not belongs to that authenticated user', async () => {
     const toUpdate = {
         _id: new mongoose.mongo.ObjectId('000000000000000000000003'),
         title: 'UPDCompleteTitle',
@@ -345,7 +379,7 @@ it('Return 401 when update todo but the updated todo do not belongs to that user
     expect(await Todo.countDocuments()).toBe(3);
 })
 
-it('Return 401 when deleting todo but the todo do not belongs to that user', async () => {
+it('T3Q3: Return 401 when deleting todo but the todo do not belongs to that authenticated user', async () => {
     let error;
     await axios.delete('http://localhost:3000/api/todos/000000000000000000000003', config2).catch(err => error = err.response.status)
     expect(error).toBe(401);
