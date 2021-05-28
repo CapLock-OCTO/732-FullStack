@@ -23,7 +23,7 @@ export default function useCrud(baseUrl, initialState = null, idProp = '_id') {
 
             getAccessTokenSilently().then(token => {
                 setToken(token);
-                console.log(token);
+                // console.log(token);
 
                 const config = {
                     headers: { Authorization: `Bearer ${token}` }
