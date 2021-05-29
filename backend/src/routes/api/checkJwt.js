@@ -1,6 +1,11 @@
 import jwt from "express-jwt";
 import jwtAuthz from "express-jwt-authz";
 import jwksRsa from "jwks-rsa";
+import dotenv from "dotenv";
+dotenv.config();
+
+// const uri = `${process.env.AUTH0_ISSUER}.well-known/jwks.json`;
+//`https://octo-tako.au.auth0.com/.well-known/jwks.json`
 
 // Authorization middleware. When used, the
 // Access Token must exist and be verified against
@@ -13,7 +18,7 @@ const checkJwt = jwt({
       cache: true,
       rateLimit: true,
       jwksRequestsPerMinute: 5,
-      jwksUri: `https://octo-tako.au.auth0.com/.well-known/jwks.json`
+      jwksUri: `${process.env.AUTH0_ISSUER}.well-known/jwks.json`,
     }),
   
     // Validate the audience and the issuer.

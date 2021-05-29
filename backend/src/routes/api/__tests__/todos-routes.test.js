@@ -8,7 +8,7 @@ import { Todo } from '../../../db/todos-schema';
 import dayjs from 'dayjs';
 import dotenv from "dotenv";
 dotenv.config();
-// this is the solution 1
+// this is the solution 1, which is not used at the moment
 // import getToken from '../utils/fixtures'; 
 
 // Solution 2: Use mock-jwks
@@ -50,18 +50,24 @@ const dummyTodos = [overdueTodo, upcomingTodo, completeTodo];
 const jwks = createJWKSMock(process.env.AUTH0_ISSUER);
 
 const token = jwks.token({
-    sub: "AaBbCcDdEeFfGgHh"
+    aud: process.env.AUTH0_AUDIENCE,
+    iss: process.env.AUTH0_ISSUER,
+    sub: "AaBbCcDdEeFfGgHh",
 });
-const authConfig = {
+
+const user1Config = {
     headers: { Authorization: `Bearer ${token}` }
-}
+};
 
 const token2 = jwks.token({
-    sub: "1234TEST"
+    aud: process.env.AUTH0_AUDIENCE,
+    iss: process.env.AUTH0_ISSUER,
+    sub: "1234TEST",
 });
-const config2 = {
+
+const user2Config = {
     headers: { Authorization: `Bearer ${token2}` }
-}
+};
 
 // Start database and server before any tests run
 beforeAll(async done => {
@@ -101,7 +107,7 @@ afterAll(done => {
 });
 
 it('retrieves all todos successfully', async () => {
-    const response = await axios.get('http://localhost:3000/api/todos', authConfig);
+    const response = await axios.get('http://localhost:3000/api/todos', user1Config);
     expect(response.status).toBe(200);
     const responseTodos = response.data;
     expect(responseTodos.length).toBe(3);
@@ -119,7 +125,7 @@ it('retrieves all todos successfully', async () => {
 });
 
 it('retrieves a single todo successfully', async () => {
-    const response = await axios.get('http://localhost:3000/api/todos/000000000000000000000003', authConfig);
+    const response = await axios.get('http://localhost:3000/api/todos/000000000000000000000003', user1Config);
     expect(response.status).toBe(200);
 
     const responseTodo = response.data;
@@ -133,7 +139,7 @@ it('retrieves a single todo successfully', async () => {
 it('returns a 404 when attempting to retrieve a nonexistant todo (valid id)', async () => {
 
     try {
-        await axios.get('http://localhost:3000/api/todos/000000000000000000000001', authConfig);
+        await axios.get('http://localhost:3000/api/todos/000000000000000000000001', user1Config);
         fail('Should have thrown an exception.');
     } catch (err) {
         const { response } = err;
@@ -144,7 +150,7 @@ it('returns a 404 when attempting to retrieve a nonexistant todo (valid id)', as
 
 it('returns a 400 when attempting to retrieve a nonexistant todo (invalid id)', async () => {
     try {
-        await axios.get('http://localhost:3000/api/todos/blah', authConfig);
+        await axios.get('http://localhost:3000/api/todos/blah', user1Config);
         fail('Should have thrown an exception.');
     } catch (err) {
         const { response } = err;
@@ -162,7 +168,7 @@ it('Creates a new todo', async () => {
         dueDate: dayjs('2100-01-01').format()
     }
 
-    const response = await axios.post('http://localhost:3000/api/todos', newTodo, authConfig);
+    const response = await axios.post('http://localhost:3000/api/todos', newTodo, user1Config);
 
     // Check response is as expected
     expect(response.status).toBe(201);
@@ -192,7 +198,7 @@ it('Gives a 400 when trying to create a todo with no title', async () => {
             dueDate: dayjs('2100-01-01').format()
         }
 
-        await axios.post('http://localhost:3000/api/todos', newTodo, authConfig);
+        await axios.post('http://localhost:3000/api/todos', newTodo, user1Config);
         fail('Should have thrown an exception.');
     } catch (err) {
 
@@ -215,7 +221,7 @@ it('updates a todo successfully', async () => {
         dueDate: dayjs('2100-01-01').format()
     }
 
-    const response = await axios.put('http://localhost:3000/api/todos/000000000000000000000004', toUpdate, authConfig);
+    const response = await axios.put('http://localhost:3000/api/todos/000000000000000000000004', toUpdate, user1Config);
 
     // Check response
     expect(response.status).toBe(204);
@@ -239,7 +245,7 @@ it('Uses the path ID instead of the body ID when updating', async () => {
         dueDate: dayjs('2100-01-01').format()
     }
 
-    const response = await axios.put('http://localhost:3000/api/todos/000000000000000000000004', toUpdate, authConfig);
+    const response = await axios.put('http://localhost:3000/api/todos/000000000000000000000004', toUpdate, user1Config);
 
     // Check response
     expect(response.status).toBe(204);
@@ -270,7 +276,7 @@ it('Gives a 404 when updating a nonexistant todo', async () => {
             dueDate: dayjs('2100-01-01').format()
         }
 
-        await axios.put('http://localhost:3000/api/todos/000000000000000000000010', toUpdate, authConfig);
+        await axios.put('http://localhost:3000/api/todos/000000000000000000000010', toUpdate, user1Config);
         fail('Should have returned a 404');
 
     } catch (err) {
@@ -285,7 +291,7 @@ it('Gives a 404 when updating a nonexistant todo', async () => {
 })
 
 it('Deletes a todo', async () => {
-    const response = await axios.delete('http://localhost:3000/api/todos/000000000000000000000003', authConfig);
+    const response = await axios.delete('http://localhost:3000/api/todos/000000000000000000000003', user1Config);
     expect(response.status).toBe(204);
 
     // Check db item was deleted
@@ -294,7 +300,7 @@ it('Deletes a todo', async () => {
 })
 
 it('Doesn\'t delete anything when it shouldn\'t', async () => {
-    const response = await axios.delete('http://localhost:3000/api/todos/000000000000000000000010', authConfig);
+    const response = await axios.delete('http://localhost:3000/api/todos/000000000000000000000010', user1Config);
     expect(response.status).toBe(204);
 
     // Make sure something wasn't deleted from the db
@@ -323,7 +329,7 @@ it('T3Q2: Return 401 when create todo but user not authorised', async () => {
         isComplete: false,
         dueDate: dayjs('2100-01-01').format()
     }
-    
+
     let error;
     await axios.post('http://localhost:3000/api/todos', newTodo).catch(err => error = err.response.status)
     expect(error).toBe(401);
@@ -359,7 +365,7 @@ it('T3Q2: Return 401 when deleting todo but user not authorised', async () => {
 //Task3 Q3
 it('T3Q3: Return 401 when get single todo but user not authorised', async () => {
     let error;
-    await axios.get('http://localhost:3000/api/todos/000000000000000000000003').catch(err => error = err.response.status, config2)
+    await axios.get('http://localhost:3000/api/todos/000000000000000000000003').catch(err => error = err.response.status, user2Config)
     expect(error).toBe(401);
 })
 
@@ -373,7 +379,7 @@ it('T3Q3: Return 401 when update todo but the updated todo do not belongs to tha
     }
 
     let error;
-    await axios.put('http://localhost:3000/api/todos/000000000000000000000003', toUpdate, config2).catch(err => error = err.response.status)
+    await axios.put('http://localhost:3000/api/todos/000000000000000000000003', toUpdate, user2Config).catch(err => error = err.response.status)
     expect(error).toBe(401);
     // Ensure DB wasn't modified
     expect(await Todo.countDocuments()).toBe(3);
@@ -381,7 +387,7 @@ it('T3Q3: Return 401 when update todo but the updated todo do not belongs to tha
 
 it('T3Q3: Return 401 when deleting todo but the todo do not belongs to that authenticated user', async () => {
     let error;
-    await axios.delete('http://localhost:3000/api/todos/000000000000000000000003', config2).catch(err => error = err.response.status)
+    await axios.delete('http://localhost:3000/api/todos/000000000000000000000003', user2Config).catch(err => error = err.response.status)
     expect(error).toBe(401);
     // Ensure DB wasn't modified
     expect(await Todo.countDocuments()).toBe(3);
